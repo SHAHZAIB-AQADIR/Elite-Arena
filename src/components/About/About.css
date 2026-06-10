@@ -1,0 +1,138 @@
+.about {
+  position: relative;
+  padding: var(--section-padding-y) 0;
+  margin-top: -6rem;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.about__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.about__bg-image {
+  position: absolute;
+  left: -10%;
+  top: 50%;
+  transform: translateY(-50%) rotate(-15deg);
+  width: min(55vw, 600px);
+  height: auto;
+  opacity: 0.12;
+  filter: grayscale(30%);
+  object-fit: contain;
+}
+
+.about__bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(10, 10, 11, 0.6) 40%,
+    var(--color-bg) 70%
+  );
+}
+
+.about__inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.about__content {
+  max-width: 580px;
+  width: 100%;
+}
+
+.about__title {
+  margin-bottom: 1.75rem;
+}
+
+.about__text {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+}
+
+.about__text p {
+  font-size: 0.9375rem;
+  line-height: 1.75;
+  color: var(--color-text-muted);
+}
+
+.about__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem 2rem;
+}
+
+.about__stat {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  transition: transform var(--transition-fast);
+}
+
+.about__stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+}
+
+.about__stat-icon--green {
+  background: var(--color-neon-green-dim);
+  color: var(--color-neon-green);
+}
+
+.about__stat-icon--purple {
+  background: var(--color-purple-dim);
+  color: var(--color-purple);
+}
+
+.about__stat-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+
+@media (max-width: 767px) {
+  .about {
+    margin-top: -3rem;
+  }
+
+  .about__inner {
+    justify-content: center;
+  }
+
+  .about__bg-image {
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-10deg);
+    width: 80vw;
+    opacity: 0.08;
+  }
+
+  .about__bg-overlay {
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(10, 10, 11, 0.8) 50%,
+      var(--color-bg) 100%
+    );
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .about__content {
+    max-width: 480px;
+  }
+}
