@@ -1,128 +1,125 @@
 import React, { useState } from 'react';
-// 1. React Router Navigation hook import kiya
 import { useNavigate } from 'react-router-dom';
 
 const Sports = () => {
-  // Navigation hook initialize kiya
   const navigate = useNavigate();
 
-  // Core Filter States & Booking Modal State
-  const [activeFilter, setActiveFilter] = useState('Cricket'); // Default sport
-  const [selectedLocation, setSelectedLocation] = useState('Gulshan-e-Iqbal'); // Default location
+  // Core Filter States (Lower-case standard state for ultra safe comparison)
+  const [activeFilter, setActiveFilter] = useState('cricket'); 
+  const [selectedLocation, setSelectedLocation] = useState('Gulshan-e-Iqbal'); 
 
-  // UI BUTTONS: Yeh ab aapke screen par dikhne wale buttons hain
   const categories = ['Cricket', 'Futsal', 'Badminton', 'Table Tennis', 'Padel'];
   const locations = ['Gulshan-e-Iqbal', 'Johar', 'North Nazimabad', 'North Karachi'];
 
-  // 2. Main Database with updated location keys matching the Karachi board regions
+  // Matrix Database
   const courtsData = {
-    Cricket: {
+    cricket: {
       'Gulshan-e-Iqbal': [
         { id: 'cricket_gulshan_1', name: 'Gulshan Indoor Arena', src: 'cricket.jpg', price: 'Rs. 2,500/hr' },
         { id: 'cricket_gulshan_2', name: 'Power Play', src: 'https://images.unsplash.com/photo-1624526267942-ab0ff8a3e972?q=80&w=500', price: 'Rs. 3,000/hr' },
         { id: 'cricket_gulshan_3', name: 'Indoor Sports Arena', src: 'cricket5.jpg', price: 'Rs. 2,000/hr' },
       ],
       'Johar': [
-        { id: 'cricket_johar_1', name: 'Inswing', src: 'cricket.jpg', price: 'Rs. 2,200/hr' },
-        { id: 'cricket_johar_2', name: 'PlayOut', src: '/cricket.jpg2', price: 'Rs. 2,600/hr' },
-        { id: 'cricket_johar_3', name: 'The Arena X', src: 'cricket5.jpg', price: 'Rs. 3,000/hr' },
+        { id: 'cricket_johar_1', name: 'Inswing', src: '/cri.jpeg', price: 'Rs. 2,200/hr' },
+        { id: 'cricket_johar_2', name: 'PlayOut', src: '/cri1.jpeg', price: 'Rs. 2,600/hr' },
+        { id: 'cricket_johar_3', name: 'The Arena X', src: '/cri2.jpeg', price: 'Rs. 3,000/hr' },
       ],
       'North Nazimabad': [
-        { id: 'cricket_nn_1', name: 'Extreme Sport', src: 'cricket.jpg', price: 'Rs. 1,800/hr' },
-        { id: 'cricket_nn_2', name: 'Power Hitter', src: 'https://images.unsplash.com/photo-1624526267942-ab0ff8a3e972?q=80&w=500', price: 'Rs. 2,300/hr' },
-        { id: 'cricket_nn_3', name: 'The Spot', src: 'cricket5.jpg', price: 'Rs. 3,300/hr' },
+        { id: 'cricket_nn_1', name: 'Extreme Sport', src: '/cri3.jpeg', price: 'Rs. 1,800/hr' },
+        { id: 'cricket_nn_2', name: 'Power Hitter', src: '/cri4.jpeg', price: 'Rs. 2,300/hr' },
+        { id: 'cricket_nn_3', name: 'The Spot', src: '/cri5.jpeg', price: 'Rs. 3,300/hr' },
       ],
       'North Karachi': [
-        { id: 'cricket_nk_1', name: 'Dreamer Arena', src: 'cricket.jpg', price: 'Rs. 3,500/hr' },
-        { id: 'cricket_nk_2', name: 'Chayell Extreme Sports', src: 'https://images.unsplash.com/photo-1624526267942-ab0ff8a3e972?q=80&w=500', price: 'Rs. 2,000/hr' },
-        { id: 'cricket_nk_3', name: 'Free Hit', src: 'cricket5.jpg', price: 'Rs. 2,500/hr' },
+        { id: 'cricket_nk_1', name: 'Dreamer Arena', src: '/cri8.jpeg', price: 'Rs. 3,500/hr' },
+        { id: 'cricket_nk_2', name: 'Chayell Extreme Sports', src: '/cri9.jpeg', price: 'Rs. 2,000/hr' },
+        { id: 'cricket_nk_3', name: 'Free Hit', src: '/cri10.jpeg', price: 'Rs. 2,500/hr' },
       ],
     },
-    Futsal: {
+    futsal: {
       'Gulshan-e-Iqbal': [
         { id: 'futsal_gulshan_1', name: 'Fire Ball', src: '/futsal.jpg', price: 'Rs. 3,500/hr' },
         { id: 'futsal_gulshan_2', name: 'The Legacy', src: '/futsal4.jpg', price: 'Rs. 2,500/hr' },
         { id: 'futsal_gulshan_3', name: 'Urban court', src: 'futsal3.jpg', price: 'Rs. 2,800/hr' },
       ],
       'Johar': [
-        { id: 'futsal_johar_1', name: 'Dugout', src: '/futsal.jpg', price: 'Rs. 2,500/hr' },
-        { id: 'futsal_johar_2', name: 'The Arena X', src: '/futsal4.jpg', price: 'Rs. 3,000/hr' },
-        { id: 'futsal_johar_3', name: 'Air Field', src: 'futsal3.jpg', price: 'Rs. 2,600/hr' },
+        { id: 'futsal_johar_1', name: 'Dugout', src: '/fot.jpeg', price: 'Rs. 2,500/hr' },
+        { id: 'futsal_johar_2', name: 'The Arena X', src: '/fot1.jpeg', price: 'Rs. 3,000/hr' },
+        { id: 'futsal_johar_3', name: 'Air Field', src: '/fot2.jpeg', price: 'Rs. 2,600/hr' },
       ],
       'North Nazimabad': [
-        { id: 'futsal_nn_1', name: 'Nizari Sports', src: '/futsal.jpg', price: 'Rs. 2,000/hr' },
-        { id: 'futsal_nn_2', name: 'Dribbling Arena', src: '/futsal4.jpg', price: 'Rs. 2,500/hr' },
-        { id: 'futsal_nn_3', name: 'Elixir Arena', src: 'futsal3.jpg', price: 'Rs. 3,200/hr' },
+        { id: 'futsal_nn_1', name: 'Nizari Sports', src: '/fot3.jpeg', price: 'Rs. 2,000/hr' },
+        { id: 'futsal_nn_2', name: 'Dribbling Arena', src: '/fot5.jpeg', price: 'Rs. 2,500/hr' },
+        { id: 'futsal_nn_3', name: 'Elixir Arena', src: '/fot6.jpeg', price: 'Rs. 3,200/hr' },
       ],
       'North Karachi': [
-        { id: 'futsal_nk_1', name: 'Dreamer Arena', src: '/futsal.jpg', price: 'Rs. 3,500/hr' },
+        { id: 'futsal_nk_1', name: 'Dreamer Arena', src: '/fot.jpeg', price: 'Rs. 3,500/hr' },
         { id: 'futsal_nk_2', name: 'The Cage', src: '/futsal4.jpg', price: 'Rs. 2,700/hr' },
         { id: 'futsal_nk_3', name: 'WSS Arena', src: 'futsal3.jpg', price: 'Rs. 3,000/hr' },
       ],
     },
-    Badminton: {
+    badminton: {
       'Gulshan-e-Iqbal': [
         { id: 'badm_gulshan_1', name: 'Smash Pro', src: 'batminton3.jpg', price: 'Rs. 2,000/hr' },
         { id: 'badm_gulshan_2', name: 'Shuttle Arena', src: 'batminton.jpg', price: 'Rs. 2,500/hr' },
+        { id: 'badm_gulshan_3', name: 'Indoor Wooden', src: 'batminton2.jpg', price: 'Rs. 1,800/hr' },
       ],
       'Johar': [
-        { id: 'badm_johar_1', name: 'Johar Club', src: 'batminton.jpg', price: 'Rs. 2,500/hr' },
-        { id: 'badm_johar_2', name: 'Johar arena', src: 'bad.jpeg', price: 'Rs. 2,200/hr' },
-        
+        { id: 'badm_johar_1', name: 'Johar Club', src: 'b1.jpeg', price: 'Rs. 2,500/hr' },
+        { id: 'badm_johar_2', name: 'Johar arena', src: 'b2.jpeg', price: 'Rs. 2,200/hr' },
+        { id: 'badm_johar_3', name: 'Air-Con', src: 'b3.jpeg', price: 'Rs. 2,500/hr' },
       ],
       'North Nazimabad': [
         { id: 'badm_nn_1', name: 'sindh sports', src: 'batminton3.jpg', price: 'Rs. 3,500/hr' },
-        { id: 'badm_nn_2', name: 'gym khana badminton court', src: 'batminton.jpg', price: 'Rs. 2,000/hr' },
-        
+        { id: 'badm_nn_2', name: 'gym khana badminton court', src: 'b1.jpeg', price: 'Rs. 2,000/hr' },
+        { id: 'badm_nn_3', name: 'power hitter', src: 'batminton2.jpg', price: 'Rs. 2,500/hr' },
       ],
       'North Karachi': [
         { id: 'badm_nk_1', name: 'Deluxe', src: 'batminton3.jpg', price: 'Rs. 2,700/hr' },
-        { id: 'badm_nk_2', name: 'pulse arena', src: 'batminton.jpg', price: 'Rs. 2,400/hr' },
-       
+        { id: 'badm_nk_2', name: 'pulse arena', src: 'b2.jpeg', price: 'Rs. 2,400/hr' },
+        { id: 'badm_nk_3', name: 'Pro Lighting', src: 'batminton2.jpg', price: 'Rs. 3,000/hr' },
       ],
     },
-    'Table Tennis': {
+    'table tennis': {
       'Gulshan-e-Iqbal': [
         { id: 'tt_gulshan_1', name: 'Spin Master Table 1', src: 'https://images.unsplash.com/photo-1534158914592-062992fbe900?q=80&w=500', price: 'Rs. 800/hr' },
         { id: 'tt_gulshan_2', name: 'Ping Pong Corner T2', src: 'tabletenis.jpg', price: 'Rs. 800/hr' },
         { id: 'tt_gulshan_3', name: 'Championship Table 3', src: 'tabletenis2.jpg', price: 'Rs. 1,000/hr' },
       ],
       'Johar': [
-        { id: 'tt_johar_1', name: 'Johar Arcade', src: 'https://images.unsplash.com/photo-1534158914592-062992fbe900?q=80&w=500', price: 'Rs. 900/hr' },
-        { id: 'tt_johar_2', name: 'Johar Arcade', src: 'tabletenis.jpg', price: 'Rx. 1,100/hr' },
+        { id: 'tt_johar_1', name: 'Johar Arcade', src: 'bad.jpeg', price: 'Rs. 900/hr' },
+        { id: 'tt_johar_2', name: 'Johar Arcade', src: 'bad7.jpeg', price: 'Rx. 1,100/hr' },
         { id: 'tt_johar_3', name: 'Rapid Fire', src: 'tabletenis2.jpg', price: 'Rs. 800/hr' },
       ],
       'North Nazimabad': [
         { id: 'tt_nn_1', name: 'Stiga court', src: 'https://images.unsplash.com/photo-1534158914592-062992fbe900?q=80&w=500', price: 'Rs. 1,100/hr' },
-        { id: 'tt_nn_2', name: 'elite training', src: 'tabletenis.jpg', price: 'Rs. 1,200/hr' },
+        { id: 'tt_nn_2', name: 'elite training', src: 'bad.jpeg', price: 'Rs. 1,200/hr' },
         { id: 'tt_nn_3', name: 'Pro Match Hub', src: 'tabletenis2.jpg', price: 'Rs. 1,500/hr' },
       ],
       'North Karachi': [
         { id: 'tt_nk_1', name: 'karachi lounge', src: 'https://images.unsplash.com/photo-1534158914592-062992fbe900?q=80&w=500', price: 'Rs. 1,700/hr' },
         { id: 'tt_nk_2', name: 'tennis arena', src: 'tabletenis.jpg', price: 'Rs. 1,000/hr' },
-        { id: 'tt_nk_3', name: 'Tournament Deck', src: 'tabletenis2.jpg', price: 'Rs. 1,200/hr' },
       ],
     },
-    Padel: {
+    padel: {
       'Gulshan-e-Iqbal': [
-        { id: 'padel_gulshan_1', name: 'padel grove', src: 'paddel1.jpg', price: 'Rs. 4,000/hr' },
+        { id: 'padel_gulshan_1', name: 'padel grove', src: 'pad1.jpeg', price: 'Rs. 4,000/hr' },
         { id: 'padel_gulshan_2', name: 'padel pulse', src: 'paddel2.jpg', price: 'Rs. 4,500/hr' },
         { id: 'padel_gulshan_3', name: 'padel garden', src: 'padel.jpg', price: 'Rs. 3,800/hr' },
       ],
       'Johar': [
-        { id: 'padel_johar_1', name: 'padel arena', src: 'paddel1.jpg', price: 'Rs. 4,500/hr' },
-        { id: 'padel_johar_2', name: 'community sports', src: 'paddel2.jpg', price: 'Rs. 5,500/hr' },
-        { id: 'padel_johar_3', name: 'padel station', src: 'padel.jpg', price: 'Rs. 4,000/hr' },
+        { id: 'padel_johar_1', name: 'padel arena', src: 'pad.jpeg', price: 'Rs. 4,500/hr' },
+        { id: 'padel_johar_2', name: 'community sports', src: 'pad1.jpeg', price: 'Rs. 5,500/hr' },
+        { id: 'padel_johar_3', name: 'padel station', src: 'pad3.jpeg', price: 'Rs. 4,000/hr' },
       ],
       'North Nazimabad': [
-        { id: 'padel_nn_1', name: 'gen z sports arena', src: 'paddel1.jpg', price: 'Rs. 4,800/hr' },
-        { id: 'padel_nn_2', name: 'padel club', src: 'paddel2.jpg', price: 'Rs. 5,000/hr' },
+        { id: 'padel_nn_1', name: 'gen z sports arena', src: 'pad4.webp', price: 'Rs. 4,800/hr' },
+        { id: 'padel_nn_2', name: 'padel club', src: 'pad5.jpeg', price: 'Rs. 5,000/hr' },
         { id: 'padel_nn_3', name: 'smash x', src: 'padel.jpg', price: 'Rs. 5,500/hr' },
       ],
       'North Karachi': [
         { id: 'padel_nk_1', name: 'titans arena', src: 'paddel1.jpg', price: 'Rs. 4,500/hr' },
         { id: 'padel_nk_2', name: 'padel flick', src: 'paddel2.jpg', price: 'Rs. 5,500/hr' },
-        { id: 'padel_nk_3', name: 'space padel', src: 'padel.jpg', price: 'Rs. 5,000/hr' },
+        { id: 'padel_nk_3', name: 'space padel', src: 'pad6.webp', price: 'Rs. 5,000/hr' },
       ],
     }
   };
@@ -194,7 +191,7 @@ const Sports = () => {
       flexDirection: 'column',
       justifyContent: 'space-between',
       borderRadius: '1rem',
-      backgroundColor: 'rgba(123, 97, 255, 0.14)',
+      backgroundColor: 'rgba(15, 23, 42, 0.4)',
       border: '1px solid rgba(30, 41, 59, 0.8)',
       overflow: 'hidden',
     },
@@ -213,13 +210,13 @@ const Sports = () => {
       position: 'absolute',
       top: '0.75rem',
       right: '0.75rem',
-      backgroundColor: 'rgba(0, 0, 0, 0.75)',
+      backgroundColor: 'black',
       padding: '0.25rem 0.75rem',
       borderRadius: '0.375rem',
       fontSize: '0.75rem',
       fontWeight: '700',
       border: '1px solid #1e293b',
-      color: '#f87171',
+      color: '#ccff00',
     },
     cardContent: {
       padding: '1.25rem',
@@ -238,25 +235,25 @@ const Sports = () => {
     courtTitle: {
       fontSize: '1.125rem',
       fontWeight: '700',
-      color: '#ffffff',
+      color: '#ccff00',
       margin: '0.25rem 0 1rem 0',
     },
     bookButton: {
       width: '100%',
-      backgroundColor: '#dc2626',
-      color: '#ffffff',
+      backgroundColor: '#ccff00',
+      color: 'black',
       border: 'none',
       padding: '0.625rem 0',
       borderRadius: '0.75rem',
       fontWeight: '700',
-      fontSize: '0.875rem',
+      fontSize: '0.975rem',
       textTransform: 'uppercase',
       letterSpacing: '0.05em',
       cursor: 'pointer',
     },
     emptyState: {
       textAlign: 'center',
-      color: '#64748b',
+      color: '#ccff00',
       padding: '3rem 0',
     }
   };
@@ -274,11 +271,12 @@ const Sports = () => {
       {/* 1. Sports Filter Tabs */}
       <div style={styles.filterTabs}>
         {categories.map((category) => {
-          const isActive = activeFilter === category;
+          // SAFE COMPARISON: Dono ko lowercase bna kr compare kr rhe hain taake logic exact check ho
+          const isActive = activeFilter.toLowerCase() === category.toLowerCase();
           return (
             <button
               key={category}
-              onClick={() => setActiveFilter(category)}
+              onClick={() => setActiveFilter(category.toLowerCase())}
               style={{
                 padding: '0.625rem 1.25rem',
                 borderRadius: '9999px',
@@ -287,10 +285,11 @@ const Sports = () => {
                 textTransform: 'uppercase',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
-                backgroundColor: isActive ? '#dc2626' : '#0f172a',
-                border: `1px solid ${isActive ? '#dc2626' : '#1e293b'}`,
-                color: isActive ? '#ffffff' : '#94a3b8',
+                backgroundColor: isActive ? '#000000' : '#0f172a',
+                border: isActive ? '1px solid #ccff00' : '1px solid #1e293b', 
+                color: isActive ? '#ccff00' : '#94a3b8', 
                 transform: isActive ? 'scale(1.05)' : 'scale(1)',
+                outline: 'none'
               }}
             >
               {category}
@@ -302,7 +301,7 @@ const Sports = () => {
       {/* 2. Locations Navigation Menu */}
       <div style={styles.locationTabsContainer}>
         {locations.map((loc) => {
-          const isLocActive = selectedLocation === loc;
+          const isLocActive = selectedLocation.toLowerCase() === loc.toLowerCase();
           return (
             <button
               key={loc}
@@ -344,7 +343,7 @@ const Sports = () => {
               <div style={styles.priceBadge}>{court.price}</div>
             </div>
             
-            {/* Info and Booking CTA Section */}
+            {/* Info Section */}
             <div style={styles.cardContent}>
               <div>
                 <span style={styles.metaText}>
@@ -353,15 +352,17 @@ const Sports = () => {
                 <h3 style={styles.courtTitle}>{court.name}</h3>
               </div>
               
-              {/* FIXED ONCLICK: Ab yeh direct URL query aur state package dono ke sath /book-me par redirect karega */}
               <button 
                 onClick={() => {
                   const sportSlug = activeFilter.toLowerCase().replace(' ', '-');
-                  navigate(`/book-me?sport=${sportSlug}&service=court`, { 
+                  const locationSlug = selectedLocation.toLowerCase().replace(' ', '-');
+                  
+                  navigate(`/book-me?sport=${sportSlug}&service=court&location=${locationSlug}`, { 
                     state: { 
                       sport: activeFilter,
-                      loc: selectedLocation,
+                      location: selectedLocation, 
                       court: court.name,
+                      courtImg: court.src,
                       price: court.price 
                     } 
                   });
@@ -376,7 +377,7 @@ const Sports = () => {
         ))}
       </div>
 
-      {/* Empty State Fallback Handling */}
+      {/* Empty State Fallback */}
       {filteredCourts.length === 0 && (
         <div style={styles.emptyState}>
           No arenas available for this specific combination.

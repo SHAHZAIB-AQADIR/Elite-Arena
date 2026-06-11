@@ -4,7 +4,9 @@ export const navLinks = [
   { label: 'Facilities', to: '/FacilityHighlights' },
   { label: 'Book Me', to: '/book' },
   { label: 'Contact', to: '/contact' },
+  { label: 'Payment', to: '/payment' },
 ];
+
 
 // 1. IDs ko short aur exact keys se match kar diya hai
 export const sportsCategories = [
@@ -142,11 +144,11 @@ export const timeSlots = [
 ];
 
 export const images = {
-  hero: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1920&q=80',
+  hero: 'background.jpg',
   bookHero:
     'https://images.unsplash.com/photo-1576678927484-cc907957088c?auto=format&fit=crop&w=1920&q=80',
   aboutRacket:
-    'https://images.unsplash.com/photo-1622163642999-958049a8a169?auto=format&fit=crop&w=800&q=80',
+    '/background.jpg',
   contact:
     'https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?auto=format&fit=crop&w=900&q=80',
   sports: {

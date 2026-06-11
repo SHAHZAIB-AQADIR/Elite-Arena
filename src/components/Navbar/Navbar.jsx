@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom'; // Next.js hooks ki jagah standard React Router
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
+import { SignedIn, SignedOut, UserButton, SignInButton } from '@clerk/clerk-react'; // Fix: Changed from @clerk/nextjs
 import { navLinks } from '../../data/content';
-import AppLink from '../../utils/navigation';
+import AppLink from '../../utils/navigation'; // Fix: Changed from next/link to your original navigation tool
 import './Navbar.css';
 
 export default function Navbar() {
@@ -39,8 +40,18 @@ export default function Navbar() {
     >
       <div className="navbar__inner container">
         <AppLink to="/" className="navbar__logo">
-          <span className="navbar__logo-icon">E</span>
-          <span className="navbar__logo-text">Elite Arena</span>
+          <img 
+            src="/logo3.png" 
+            alt="Elite Arena Logo" 
+            className="navbar__logo-img" 
+            style={{ 
+              height: '42px', 
+              objectFit: 'contain', 
+              display: 'block',
+              backgroundColor: 'transparent',
+              mixBlendMode: 'color-burn' 
+            }} 
+          />  
         </AppLink>
 
         <nav className="navbar__nav" aria-label="Main navigation">
@@ -54,12 +65,26 @@ export default function Navbar() {
               {link.label}
             </AppLink>
           ))}
+          <SignedIn>
+            <AppLink to="/admin" className={`navbar__link ${pathname === '/admin' ? 'navbar__link--active' : ''}`}>
+              Admin Panel
+            </AppLink>
+          </SignedIn>
         </nav>
 
-        <div className="navbar__actions">
-          <AppLink to="/login" className="navbar__login">
-            Login
-          </AppLink>
+        <div className="navbar__actions" style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+          <SignedOut>
+            <SignInButton mode="modal">
+              <button className="navbar__login" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+                Login
+              </button>
+            </SignInButton>
+          </SignedOut>
+
+          <SignedIn>
+            <UserButton afterSignOutUrl="/" />
+          </SignedIn>
+
           <AppLink to="/book" className="btn btn--purple navbar__book">
             Book Now
           </AppLink>
@@ -68,8 +93,6 @@ export default function Navbar() {
         <button
           type="button"
           className="navbar__toggle"
-          aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-          aria-expanded={mobileOpen}
           onClick={() => setMobileOpen(!mobileOpen)}
         >
           {mobileOpen ? <X size={24} /> : <Menu size={24} />}
@@ -103,14 +126,22 @@ export default function Navbar() {
                   </AppLink>
                 </motion.div>
               ))}
-              <AppLink to="/login" className="navbar__mobile-link" onClick={closeMobile}>
-                Login
-              </AppLink>
-              <AppLink
-                to="/book"
-                className="btn btn--purple navbar__mobile-book"
-                onClick={closeMobile}
-              >
+
+              <SignedIn>
+                <AppLink to="/admin" className="navbar__mobile-link" onClick={closeMobile}>
+                  Admin Panel
+                </AppLink>
+              </SignedIn>
+
+              <SignedOut>
+                <SignInButton mode="modal">
+                  <button className="navbar__mobile-link" style={{ background: 'none', border: 'none', textAlign: 'left', width: '100%', cursor: 'pointer' }} onClick={closeMobile}>
+                    Login
+                  </button>
+                </SignInButton>
+              </SignedOut>
+              
+              <AppLink to="/book" className="btn btn--purple navbar__mobile-book" onClick={closeMobile}>
                 Book Now
               </AppLink>
             </nav>

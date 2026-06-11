@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
-import { scrollToHash } from '../../utils/navigation';
-import Navbar from '../Navbar/Navbar';
+import { Outlet, useLocation } from 'react-router-dom'; 
+import { ClerkProvider } from '@clerk/clerk-react'; 
+import Navbar from '../Navbar/Navbar'; 
 import Footer from '../Footer/Footer';
 
 export default function Layout() {
@@ -9,17 +9,25 @@ export default function Layout() {
 
   useEffect(() => {
     if (hash) {
-      requestAnimationFrame(() => scrollToHash(hash));
+      const id = hash.replace('#', '');
+      const element = document.getElementById(id);
+      if (element) {
+        requestAnimationFrame(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        });
+      }
     } else {
       window.scrollTo({ top: 0, behavior: pathname === '/' ? 'auto' : 'smooth' });
     }
   }, [pathname, hash]);
 
   return (
-    <div className="layout">
-      <Navbar />
-      <Outlet />
-      <Footer />
-    </div>
+    <ClerkProvider publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY} afterSignOutUrl="/">
+      <div className="layout">
+        <Navbar />
+        <Outlet />
+        <Footer />
+      </div>
+    </ClerkProvider>
   );
 }
