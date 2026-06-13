@@ -15,8 +15,8 @@ import {
   MapPin,
   Lock, 
   Users,
-  ShieldCheck, // Icon for policy rules
-  LifeBuoy,    // Icon for customer support SLA
+  ShieldCheck, 
+  LifeBuoy,    
 } from 'lucide-react';
 import {
   sportsCategories,
@@ -25,6 +25,8 @@ import {
   timeSlots,
   images,
 } from '../data/content';
+import { db } from '../firebase/config'; // Firebase config import kiya
+import { collection, addDoc, onSnapshot, query, serverTimestamp } from 'firebase/firestore';
 import './BookMe.css';
 
 const STEPS = ['Service', 'Details', 'Confirm'];
@@ -61,7 +63,9 @@ export default function BookMe() {
   const [form, setForm] = useState(initialForm);
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState({});
+  const [allDbBookings, setAllDbBookings] = useState([]); // Database se aane wali bookings save karne ke liye
 
+  // URL Query Params aur Gallery parameters handles karna
   useEffect(() => {
     const galleryData = location.state;
 
@@ -92,6 +96,22 @@ export default function BookMe() {
       }));
     }
   }, [searchParams, location.state]);
+
+  // Real-time bookings check karne ke liye taake pehle se booked slots hide ho sakein
+  useEffect(() => {
+    const q = query(collection(db, 'bookings'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const bookingsData = [];
+      snapshot.forEach((doc) => {
+        bookingsData.push(doc.data());
+      });
+      setAllDbBookings(bookingsData);
+    }, (err) => {
+      console.error("Error loading active slots validation data:", err);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const selectedSport = sportsContent ? sportsContent[form.sport.toLowerCase()] : null;
   const selectedService = bookingServices ? bookingServices.find((s) => s.id === form.service) : null;
@@ -154,16 +174,9 @@ export default function BookMe() {
 
     const now = new Date();
     const isToday = form.date === now.toISOString().split('T')[0];
-    
-    let activeBookings = [];
-    try {
-      activeBookings = JSON.parse(localStorage.getItem('elite_arena_bookings') || '[]');
-    } catch (e) {
-      activeBookings = [];
-    }
 
     return slots.filter((slot) => {
-      const isAlreadyBooked = activeBookings.some((b) => {
+      const isAlreadyBooked = allDbBookings.some((b) => {
         if (
           b.date === form.date &&
           b.location === form.location && 
@@ -192,7 +205,7 @@ export default function BookMe() {
       }
       return true;
     });
-  }, [form.date, form.sport, form.courtName, form.location]);
+  }, [form.date, form.sport, form.courtName, form.location, allDbBookings]);
 
   const filteredEndSlots = useMemo(() => {
     if (!form.startTime) return [];
@@ -259,31 +272,37 @@ export default function BookMe() {
 
   const handleBack = () => setStep((s) => Math.max(s - 1, 0));
 
-  const handleSubmit = (event) => {
+  // Firebase Firestore Integration
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (!validateStep()) return;
 
     const newBooking = {
-      id: 'bk_' + Date.now(),
       name: form.name,
+      email: form.email,
+      phone: form.phone,
       location: form.location,
       sport: form.sport,
-      courtName: form.courtName || 'Default Court',
+      service: form.service,
+      courtName: form.courtName || 'Standard Track',
       date: form.date,
       startTime: form.startTime,
       endTime: form.endTime,
-      teamNeeded: form.teamNeeded === 'needed' ? 'Yes' : 'No',
+      teamNeeded: form.teamNeeded,
+      notes: form.notes,
+      estimatedTotal: price,
+      createdAt: serverTimestamp() // Dashboard sort karne ke liye server side timestamp
     };
 
     try {
-      const currentBookings = JSON.parse(localStorage.getItem('elite_arena_bookings') || '[]');
-      localStorage.setItem('elite_arena_bookings', JSON.stringify([...currentBookings, newBooking]));
+      // Firebase cloud par add karne ka method
+      await addDoc(collection(db, 'bookings'), newBooking);
+      setSubmitted(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (e) {
-      console.error(e);
+      console.error("Firebase save operation failed:", e);
+      alert("Database error: Booking save nahi ho saki. Please try again.");
     }
-
-    setSubmitted(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const minDate = new Date().toISOString().split('T')[0];
@@ -321,7 +340,6 @@ export default function BookMe() {
             <div><span>Total</span><strong>{price}</strong></div>
           </div>
 
-          {/* --- Policy Reminder Panel on Success --- */}
           <div className="glass-card" style={{ maxWidth: '640px', width: '100%', margin: '1.5rem auto 0', padding: '1.25rem', textAlign: 'left', border: '1px solid rgba(167, 139, 250, 0.15)' }}>
             <span style={{ fontSize: '0.8rem', color: '#a78bfa', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '0.4rem', textTransform: 'uppercase', marginBottom: '0.5rem' }}>
               <ShieldCheck size={16} /> Cancellation & Support Terms
@@ -754,7 +772,6 @@ export default function BookMe() {
                       ))}
                     </div>
 
-                    {/* --- NEW ADDITION: Cancellation Policies & SLA Rules Board --- */}
                     <div style={{ marginTop: '2rem', padding: '1.25rem', background: 'rgba(15, 23, 42, 0.4)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '12px' }}>
                       <h4 style={{ color: '#fff', fontSize: '0.9rem', fontWeight: '700', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                         <ShieldCheck size={18} style={{ color: '#10b981' }} /> Elite Arena Booking Policies

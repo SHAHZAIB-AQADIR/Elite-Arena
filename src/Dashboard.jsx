@@ -10,31 +10,43 @@ import {
   ArrowLeft
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { db } from './firebase/config'; // Aapko firebase configure karna hoga
+import { collection, onSnapshot, query, orderBy, deleteDoc, doc } from 'firebase/firestore';
 import './Dashboard.css';
 
 export default function Dashboard() {
   const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchBookings = () => {
-      try {
-        const stored = JSON.parse(localStorage.getItem('elite_arena_bookings') || '[]');
-        setBookings(stored.sort((a, b) => b.id.localeCompare(a.id)));
-      } catch (e) {
-        console.error("Error loading bookings:", e);
-      }
-    };
+    // Firebase se real-time bookings fetch karne ka tareeqa
+    const q = query(collection(db, 'bookings'), orderBy('createdAt', 'desc'));
+    
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const bookingsData = [];
+      snapshot.forEach((doc) => {
+        bookingsData.push({ id: doc.id, ...doc.data() });
+      });
+      setBookings(bookingsData);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error loading bookings from Firebase:", error);
+      setLoading(false);
+    });
 
-    fetchBookings();
-    window.addEventListener('storage', fetchBookings);
-    return () => window.removeEventListener('storage', fetchBookings);
+    // Clean up listener on unmount
+    return () => unsubscribe();
   }, []);
 
-  const handleDeleteBooking = (id) => {
+  const handleDeleteBooking = async (id) => {
     if (window.confirm("Are you sure you want to cancel this booking?")) {
-      const updatedBookings = bookings.filter(b => b.id !== id);
-      setBookings(updatedBookings);
-      localStorage.setItem('elite_arena_bookings', JSON.stringify(updatedBookings));
+      try {
+        // Firebase se booking delete karna
+        await deleteDoc(doc(db, 'bookings', id));
+      } catch (error) {
+        console.error("Error deleting booking:", error);
+        alert("Could not delete booking. Try again.");
+      }
     }
   };
 
@@ -88,9 +100,15 @@ export default function Dashboard() {
       <div className="glass-card table-container">
         <h3 className="table-title">Active Bookings List</h3>
         
-        {bookings.length === 0 ? (
+        {loading ? (
           <div className="empty-state">
-            <CalendarIcon size={48} className="empty-icon" />
+            <p>Loading bookings in real-time...</p>
+          </div>
+        ) : bookings.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-icon-wrapper" style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}>
+              <CalendarIcon size={48} className="empty-icon" style={{ color: '#a78bfa' }} />
+            </div>
             <p>No bookings available at the moment.</p>
           </div>
         ) : (
