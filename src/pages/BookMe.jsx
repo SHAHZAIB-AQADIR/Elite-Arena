@@ -31,11 +31,20 @@ import './BookMe.css';
 
 const STEPS = ['Service', 'Details', 'Confirm'];
 
+// Ab saari 12 locations add kar di hain takay gallery routes smoothly handle hon
 const LOCATIONS = [
   { id: 'gulshan-e-iqbal', label: 'Gulshan-e-Iqbal' },
   { id: 'johar', label: 'Johar' },
   { id: 'north-nazimabad', label: 'North Nazimabad' },
-  { id: 'north-karachi', label: 'North Karachi' }
+  { id: 'north-karachi', label: 'North Karachi' },
+  { id: 'dha', label: 'DHA' },
+  { id: 'clifton', label: 'Clifton' },
+  { id: 'bahria-town', label: 'Bahria Town' },
+  { id: 'malir', label: 'Malir' },
+  { id: 'saddar', label: 'Saddar' },
+  { id: 'pechs', label: 'PECHS' },
+  { id: 'fb-area', label: 'FB Area' },
+  { id: 'korangi', label: 'Korangi' }
 ];
 
 const initialForm = {
@@ -78,7 +87,7 @@ export default function BookMe() {
         courtName: galleryData.court || '',
         customPrice: galleryData.price || '', 
         customImg: galleryData.courtImg || '',  
-        location: galleryData.location ? galleryData.location.toLowerCase().replace(' ', '-') : prev.location,
+        location: galleryData.location ? galleryData.location.toLowerCase().replace(/ /g, '-') : prev.location,
       }));
     } else {
       const sport = searchParams.get('sport');
@@ -489,7 +498,7 @@ export default function BookMe() {
                     <div className="book__location-bar" style={{
                       display: 'flex',
                       flexWrap: 'wrap',
-                      gap: '1.5rem',
+                      gap: '0.75rem',
                       padding: '1rem',
                       background: 'rgba(15, 23, 42, 0.4)',
                       borderRadius: '12px',
@@ -508,19 +517,20 @@ export default function BookMe() {
                               display: 'flex',
                               alignItems: 'center',
                               gap: '0.5rem',
-                              padding: '0.6rem 1.2rem',
+                              padding: '0.5rem 1rem',
                               borderRadius: '8px',
                               border: isActive ? '1px solid #ef4444' : '1px solid transparent',
                               background: isActive ? 'rgba(30, 41, 59, 0.8)' : 'transparent',
                               color: isActive ? '#ef4444' : '#94a3b8',
                               fontWeight: isActive ? '700' : '500',
                               cursor: 'pointer',
+                              fontSize: '0.85rem',
                               transition: 'all 0.3s ease',
                             }}
                           >
                             <span style={{ 
                               color: isActive ? '#ef4444' : '#f43f5e',
-                              fontSize: '1.1rem' 
+                              fontSize: '1rem' 
                             }}>📍</span>
                             {loc.label}
                           </button>
